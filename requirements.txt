@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+geopandas
+groq
+python-dotenv
+pandas
+torch
+scikit-learn
+joblib
+shapely
+pydantic
