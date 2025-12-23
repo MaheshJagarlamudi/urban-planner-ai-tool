@@ -1,6 +1,6 @@
 # urban-planner-ai-tool
 ML backend for an urban planning tool using Vizag geospatial data.
-# Urban Planner AI Tool
+
 
 ## Overview
 This project is a Minimum Viable Product (MVP) built to explore how AI and data
