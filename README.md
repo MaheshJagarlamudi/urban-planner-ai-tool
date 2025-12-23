@@ -86,6 +86,7 @@ policy decisions.
 - Simple web-based frontend hosted on GitHub
 - Sends user input to the backend API
 - Displays predicted outputs from the model
+- Frontend code is available at: https://github.com/MaheshJagarlamudi/urban-planner-ai-tool-frontend
 
 ---
 
