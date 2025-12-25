@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Union, Dict, Any
 
-# --- Pydantic Models for GeoJSON Data (Unchanged) ---
+
 # This defines the structure of the data coming from your GeoJSON file.
 class WardProperties(BaseModel):
     wardcode: Optional[str] = Field(None, alias="wardcode")
@@ -39,7 +39,7 @@ class WardCollection(BaseModel):
     type: str = "FeatureCollection"
     features: List[WardFeature]
 
-# --- Pydantic Models for API Requests (Unchanged) ---
+#  Pydantic Models for API Requests 
 class SimulationRequest(BaseModel):
     infrastructure_type: str
     geometry: Dict[str, Any]
@@ -50,43 +50,41 @@ class SuggestionResponse(BaseModel):
     latitude: float
     longitude: float
 
-# --- NEW: Unified, "Super OP" Simulation Report Models ---
 
-# Nested model for detailed environmental predictions
 class EnvironmentalImpactReport(BaseModel):
     predicted_aqi_change: Optional[float] = None
     predicted_heat_index_change: Optional[float] = None
     predicted_urban_vegetation_change_percent: Optional[float] = None
-    narrative: str # The AI's "word mouthing" for this section
-
+    narrative: str 
 # Nested model for detailed traffic predictions
 class TrafficImpactReport(BaseModel):
     predicted_traffic_density_change_percent: Optional[float] = None
     predicted_light_vehicle_change_percent: Optional[float] = None
     predicted_medium_vehicle_change_percent: Optional[float] = None
     predicted_heavy_vehicle_change_percent: Optional[float] = None
-    narrative: str # The AI's "word mouthing" for this section
-
+    narrative: str 
+    
 # Nested model for detailed population predictions
 class PopulationImpactReport(BaseModel):
     predicted_total_population_change: Optional[int] = None
     predicted_age_group_most_affected: Optional[str] = None
-    narrative: str # The AI's "word mouthing" for this section
+    narrative: str 
 
 # Nested model for detailed economic predictions
 class EconomicImpactReport(BaseModel):
     predicted_gdp_change_crore: Optional[float] = None
-    narrative: str # The AI's "word mouthing" for this section
+    narrative: str 
 
-# The single, unified master report model. All sections are optional.
+
 class SimulationReport(BaseModel):
     status: str = "success"
     infrastructure_type: str
-    summary_narrative: str # An overall summary from the AI
+    summary_narrative: str
     environmental_impact: Optional[EnvironmentalImpactReport] = None
     traffic_impact: Optional[TrafficImpactReport] = None
     population_impact: Optional[PopulationImpactReport] = None
     economic_impact: Optional[EconomicImpactReport] = None
 
-# The final Union type. The API will either return our new unified report, or a simple dictionary for errors.
+
 SimulationResponse = Union[SimulationReport, dict]
+
