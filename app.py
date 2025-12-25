@@ -21,20 +21,20 @@ app = FastAPI(
     version="FINAL"
 )
 
-# --- THIS IS THE FINAL, CRUCIAL FIX ---
+
 # VIP list for CORS (allow frontend to communicate safely)
 origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # universal pass
+    allow_origins=origins, 
     allow_credentials=True,
-    allow_methods=["*"],    # allow POST requests
-    allow_headers=["*"],    # allow 'Content-Type' header
+    allow_methods=["*"],    
+    allow_headers=["*"],    
 )
 
 app.state.geodata_gdf = None
 
-# --- Data Loading ---
+
 @app.on_event("startup")
 def startup_event():
     """Loads the GeoJSON data into a GeoDataFrame when the server starts."""
@@ -92,4 +92,5 @@ def suggest_placement(infra_type: str):
 def health_check():
     """A simple endpoint to check if the server is running."""
     return {"status": "ok"}
+
 
