@@ -7,13 +7,13 @@ from groq import Groq
 from dotenv import load_dotenv
 import pandas as pd
 
-# We now import the single, unified report model from our final models.py file
+
 from models import SimulationReport
 
 logger = logging.getLogger("urban-planning-api")
 load_dotenv()
 
-# --- The Main "Director" Function (Simple & Synchronous) ---
+
 def run_advanced_simulation(intersecting_wards_data: gpd.GeoDataFrame, infra_type: str) -> dict:
     """
     This is the main director function. It runs synchronously and orchestrates 
@@ -23,16 +23,16 @@ def run_advanced_simulation(intersecting_wards_data: gpd.GeoDataFrame, infra_typ
     if intersecting_wards_data.empty:
         return {"status": "no_impact", "message": "The new infrastructure is outside of any known ward."}
 
-    # 1. Run the Numeric Engine (PyTorch placeholder) to get hard numbers
+    
     numeric_predictions = run_pytorch_predictions(intersecting_wards_data, infra_type_lower)
     
-    # 2. Prepare the rich context for the Narrative Engine (LLM)
+   
     context = _prepare_llm_context(intersecting_wards_data, numeric_predictions, infra_type_lower)
     
-    # 3. Craft the powerful prompt for the LLM
+   
     prompt = _create_generative_prompt(context, infra_type_lower)
     
-    # 4. Get the final, generative report from the live LLM
+   
     llm_response = _query_llm_api(prompt)
     
     # Add the specific infrastructure_type to the final report for the frontend
@@ -42,7 +42,7 @@ def run_advanced_simulation(intersecting_wards_data: gpd.GeoDataFrame, infra_typ
     return llm_response
 
 
-# --- FINAL, CORRECTED "AI SUGGESTION" FUNCTION ---
+
 def get_ai_suggestion(all_wards_gdf: gpd.GeoDataFrame, infra_type: str) -> Dict:
     """
     Uses proxy data to find the most suitable ward for a new infrastructure project.
@@ -53,13 +53,13 @@ def get_ai_suggestion(all_wards_gdf: gpd.GeoDataFrame, infra_type: str) -> Dict:
     gdf = all_wards_gdf.copy()
     
     try:
-        # --- NEW: Bulletproof Data Cleaning ---
+        
         # We ensure all columns we need are clean and numeric before using them.
         gdf['totaldata_Total Ward Population'] = pd.to_numeric(gdf['totaldata_Total Ward Population'], errors='coerce').fillna(0)
         gdf['totaldata_Estimated Ward GDP (₹ Crore)'] = pd.to_numeric(gdf['totaldata_Estimated Ward GDP (₹ Crore)'], errors='coerce').fillna(0)
-        gdf['green_space_numeric'] = pd.to_numeric(gdf['totaldata_% Green Space'].str.rstrip('%'), errors='coerce').fillna(100) # Fill missing green space with high value
+        gdf['green_space_numeric'] = pd.to_numeric(gdf['totaldata_% Green Space'].str.rstrip('%'), errors='coerce').fillna(100) 
         
-        # --- The Core Proxy Logic (Now safe to run) ---
+        
         if infra_type in ["school", "hospital"]:
             target_ward = gdf.loc[gdf['totaldata_Total Ward Population'].idxmax()]
             reason = f"This ward has the highest population density ({int(target_ward['totaldata_Total Ward Population']):,}), indicating a strong need for public services."
@@ -88,7 +88,7 @@ def get_ai_suggestion(all_wards_gdf: gpd.GeoDataFrame, infra_type: str) -> Dict:
         return {"ward_name": "Error", "reason": f"An error occurred while generating the suggestion: {e}", "latitude": 17.6868, "longitude": 83.2185}
 
 
-# --- Helper Functions (The Two AI Engines) ---
+
 
 def run_pytorch_predictions(wards_data: gpd.GeoDataFrame, infrastructure_type: str) -> Dict[str, Union[float, str]]:
     """
@@ -185,4 +185,5 @@ def _query_llm_api(prompt: str) -> dict:
         return json.loads(chat_completion.choices[0].message.content)
     except Exception as e:
         logger.error(f"An unexpected error occurred while querying the Groq API: {e}")
+
         return {"status": "error", "message": f"An error occurred with the Groq API: {e}"}
